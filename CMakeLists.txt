@@ -47,7 +47,7 @@ target_include_directories(${APP} PRIVATE ${CMAKE_SOURCE_DIR}/include
                                           ${IRODS_EXTERNALS_FULLPATH_BOOST}/include)
 target_link_libraries(${APP} PRIVATE irods_client
                                      irods_common
-                                     #${IRODS_EXTERNALS_FULLPATH_BOOST}/lib/libboost_filesystem.so
+                                     ${IRODS_EXTERNALS_FULLPATH_BOOST}/lib/libboost_filesystem.so
                                      ${IRODS_EXTERNALS_FULLPATH_BOOST}/lib/libboost_system.so
                                      ${IRODS_EXTERNALS_FULLPATH_BOOST}/lib/libboost_program_options.so
                                      c++abi)

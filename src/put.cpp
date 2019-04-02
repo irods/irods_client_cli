@@ -35,6 +35,11 @@ namespace irods::command
         po::store(po::command_line_parser(_argc, _argv).options(desc).positional(pod).run(), vm);
         po::notify(vm);
 
+        if (vm.count("help") > 0) {
+            std::cout << desc << '\n';
+            return 0;
+        }
+
         if (vm.count("physical_path") == 0) {
             std::cerr << "Error: Missing physical path.\n";
             return 1;

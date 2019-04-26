@@ -44,9 +44,11 @@ target_compile_definitions(${APP} PRIVATE ${IRODS_COMPILE_DEFINITIONS})
 target_include_directories(${APP} PRIVATE ${CMAKE_SOURCE_DIR}/include
                                           ${IRODS_INCLUDE_DIRS}
                                           ${IRODS_EXTERNALS_FULLPATH_CLANG}/include/c++/v1
+                                          ${IRODS_EXTERNALS_FULLPATH_JSON}/include
                                           ${IRODS_EXTERNALS_FULLPATH_BOOST}/include)
-target_link_libraries(${APP} PRIVATE irods_client
-                                     irods_common
+target_link_libraries(${APP} PRIVATE irods_common
+                                     irods_plugin_dependencies
+                                     irods_client
                                      ${IRODS_EXTERNALS_FULLPATH_BOOST}/lib/libboost_filesystem.so
                                      ${IRODS_EXTERNALS_FULLPATH_BOOST}/lib/libboost_system.so
                                      ${IRODS_EXTERNALS_FULLPATH_BOOST}/lib/libboost_program_options.so

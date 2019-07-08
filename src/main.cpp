@@ -6,6 +6,7 @@
 
 #include "get.hpp"
 #include "put.hpp"
+#include "touch.hpp"
 
 namespace 
 {
@@ -13,7 +14,8 @@ namespace
 
     const std::unordered_map<std::string, command> commands{
         {"get", irods::command::get},
-        {"put", irods::command::put}
+        {"put", irods::command::put},
+        {"touch", irods::command::touch}
     };
 } // anonymous namespace
 

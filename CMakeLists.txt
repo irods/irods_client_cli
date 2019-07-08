@@ -37,7 +37,8 @@ set(APP irods)
 
 add_executable(${APP} ${CMAKE_SOURCE_DIR}/src/main.cpp
                       ${CMAKE_SOURCE_DIR}/src/get.cpp
-                      ${CMAKE_SOURCE_DIR}/src/put.cpp)
+                      ${CMAKE_SOURCE_DIR}/src/put.cpp
+                      ${CMAKE_SOURCE_DIR}/src/touch.cpp)
 set_target_properties(${APP} PROPERTIES CXX_STANDARD ${IRODS_CXX_STANDARD})
 target_compile_options(${APP} PRIVATE -Wno-write-strings -nostdinc++)
 target_compile_definitions(${APP} PRIVATE ${IRODS_COMPILE_DEFINITIONS})

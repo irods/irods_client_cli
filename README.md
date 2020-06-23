@@ -1,4 +1,4 @@
-# iRODS Console
+# iRODS CLI
 Provides streaming to/from stdin/stdout.
 
 ## How to stream data into iRODS from stdin

@@ -9,7 +9,7 @@ project(irods_cli)
 
 set(IRODS_CLI_VERSION ${IRODS_VERSION})
 set(IRODS_CLI_REVISION 0)
-set(IRODS_CLI_LIBRARY_INSTALL_DIR /usr/lib/irods/plugins/cli)
+set(IRODS_CLI_COMMANDS_INSTALL_DIR /usr/lib/irods/plugins/cli)
 
 include(${IRODS_TARGETS_PATH})
 
@@ -65,7 +65,7 @@ target_link_libraries(${APP} PRIVATE irods_common
                                      ${IRODS_EXTERNALS_FULLPATH_FMT}/lib/libfmt.so
                                      dl)
 
-# CLI Subcommands
+# CLI Commands
 add_subdirectory(commands/get)
 add_subdirectory(commands/ls)
 add_subdirectory(commands/put)

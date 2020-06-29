@@ -21,7 +21,7 @@ using cli_command_map_type = std::unordered_map<std::string_view, boost::shared_
 
 auto is_shared_library(const fs::path& p) -> bool;
 
-auto load_cli_command_modules(const po::variables_map& vm) -> cli_command_map_type;
+auto load_cli_command_plugins(const po::variables_map& vm) -> cli_command_map_type;
 
 auto print_version_info() noexcept -> void;
 auto print_usage_info(const cli_command_map_type& cli) -> void;
@@ -58,7 +58,7 @@ int main(int argc, char* argv[])
 
         load_client_api_plugins();
 
-        auto cli = load_cli_command_modules(vm);
+        auto cli = load_cli_command_plugins(vm);
 
         if (const auto show_help_text = vm.count("help") > 0; vm.count("command")) {
             const auto command = vm["command"].as<std::string>();
@@ -96,7 +96,7 @@ auto is_shared_library(const fs::path& p) -> bool
     return true;
 }
 
-auto load_cli_command_modules(const po::variables_map& vm) -> cli_command_map_type
+auto load_cli_command_plugins(const po::variables_map& vm) -> cli_command_map_type
 {
     cli_command_map_type map;
     fs::path lib_dir;
@@ -136,7 +136,7 @@ auto print_version_info() noexcept -> void
 auto print_usage_info(const cli_command_map_type& cli) -> void
 {
     fmt::print("usage: irods [-v | --version] [-p | --plugin-home <dir>] [-h | --help]\n"
-               "usage: irods [-p | --plugin-home <dir>] <command> [<options>] [<args>]\n"
+               "usage: irods [-p | --plugin-home <dir>] <command> [<args>]\n"
                "\n"
                "These are common iRODS commands used in various situations:\n"
                "\n");

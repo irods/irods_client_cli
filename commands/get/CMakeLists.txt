@@ -1,6 +1,6 @@
-project(irods_cli_touch)
+project(irods_cli_get)
 
-set(CLI_MODULE_NAME irods_cli_touch)
+set(CLI_MODULE_NAME irods_cli_get)
 
 add_library(${CLI_MODULE_NAME} MODULE ${CMAKE_CURRENT_SOURCE_DIR}/main.cpp)
 
@@ -27,7 +27,7 @@ target_link_libraries(${CLI_MODULE_NAME} PRIVATE irods_common
 
 # Installation
 install(TARGETS ${CLI_MODULE_NAME}
-        DESTINATION ${IRODS_CLI_LIBRARY_INSTALL_DIR}
+        DESTINATION ${IRODS_CLI_COMMANDS_INSTALL_DIR}
         PERMISSIONS OWNER_READ OWNER_WRITE OWNER_EXECUTE
                     GROUP_READ GROUP_EXECUTE
                     WORLD_READ WORLD_EXECUTE)

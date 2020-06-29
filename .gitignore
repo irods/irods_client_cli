@@ -1,1 +1,4 @@
 *.swp
+*.vim
+compile_commands.json
+.clangd/

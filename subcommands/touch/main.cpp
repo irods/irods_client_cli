@@ -39,10 +39,10 @@ namespace irods::cli
         {
             using rep_type = fs::object_time_type::duration::rep;
 
-            po::options_description desc{"Allowed options"};
+            po::options_description desc{""};
             desc.add_options()
-                ("logical_path", po::value<std::string>(), "The logical path of a collection or data object.")
-                ("modification_time", po::value<rep_type>(), "The new modification time in seconds.");
+                ("logical_path", po::value<std::string>(), "")
+                ("modification_time", po::value<rep_type>(), "");
 
             po::positional_options_description pod;
             pod.add("logical_path", 1);

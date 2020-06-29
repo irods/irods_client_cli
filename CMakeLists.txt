@@ -66,6 +66,7 @@ target_link_libraries(${APP} PRIVATE irods_common
 
 # CLI Subcommands
 add_subdirectory(subcommands/get)
+add_subdirectory(subcommands/ls)
 add_subdirectory(subcommands/put)
 add_subdirectory(subcommands/touch)
 

@@ -41,10 +41,10 @@ namespace irods::cli
 
         auto execute(const std::vector<std::string>& args) -> int override
         {
-            po::options_description desc{"Allowed options"};
+            po::options_description desc{""};
             desc.add_options()
-                ("logical_path", po::value<std::string>(), "The logical path of a data object.")
-                ("physical_path", po::value<std::string>(), "The physical path to write to.");
+                ("logical_path", po::value<std::string>(), "")
+                ("physical_path", po::value<std::string>(), "");
 
             po::positional_options_description pod;
             pod.add("logical_path", 1);

@@ -71,18 +71,18 @@ namespace irods::cli
                 return 1;
             }
 
-            po::options_description desc{"Allowed options"};
-            desc.add_options()
-                ("physical_path", po::value<std::string>(), "The physical path of the file to read from [use '-' for stdin].")
-                ("logical_path", po::value<std::string>()->default_value(env.rodsHome), "The logical path of an existing collection.")
-                ("connection_pool_size,c", po::value<int>()->default_value(4), "Connection pool size for handling directories.");
+            po::options_description options{""};
+            options.add_options()
+                ("physical_path", po::value<std::string>(), "")
+                ("logical_path", po::value<std::string>()->default_value(env.rodsHome), "")
+                ("connection_pool_size,c", po::value<int>()->default_value(4), "");
 
-            po::positional_options_description pod;
-            pod.add("physical_path", 1);
-            pod.add("logical_path", 1);
+            po::positional_options_description positional_options;
+            positional_options.add("physical_path", 1);
+            positional_options.add("logical_path", 1);
 
             po::variables_map vm;
-            po::store(po::command_line_parser(args).options(desc).positional(pod).run(), vm);
+            po::store(po::command_line_parser(args).options(options).positional(positional_options).run(), vm);
             po::notify(vm);
 
             if (vm.count("physical_path") == 0) {

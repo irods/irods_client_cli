@@ -30,6 +30,7 @@ int main(int argc, char* argv[])
     options.add_options()
         ("help,h", "")
         ("version,v", "")
+        ("plugin-home,p", "")
         ("command", po::value<std::string>(), "")
         ("arguments", po::value<std::vector<std::string>>(), "");
 
@@ -45,6 +46,7 @@ int main(int argc, char* argv[])
         .run();
 
     po::store(parsed, vm);
+    po::notify(vm);
 
     if (vm.count("version")) {
         print_version_info();
@@ -91,6 +93,8 @@ auto load_cli_command_modules(po::options_description& options) -> cli_command_m
     cli_command_map_type map;
 
     // TODO The shared library directory should come from a config file or something.
+    // This info should come from the plugins home directory. There should be an option
+    // for overriding the default.
     for (auto&& e : fs::directory_iterator{"/opt/irods_cli/lib"}) {
         if (is_shared_library(e)) {
             namespace dll = boost::dll;
@@ -109,7 +113,7 @@ auto print_version_info() noexcept -> void
 
 auto print_usage_info(const cli_command_map_type& cli) -> void
 {
-    fmt::print("usage: irods [-v | --version] [-h | --help]\n"
+    fmt::print("usage: irods [-v | --version] [-p | --plugin-home <DIR>] [-h | --help]\n"
                "usage: irods <command> [<args>]\n"
                "\n"
                "These are common iRODS commands used in various situations:\n"

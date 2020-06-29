@@ -1,6 +1,7 @@
 #include "command.hpp"
 
-#include "rodsClient.h"
+#include <irods/rodsClient.h>
+#include <irods/irods_default_paths.hpp>
 
 #include <boost/program_options.hpp>
 #include <boost/filesystem.hpp>
@@ -9,6 +10,7 @@
 #include <fmt/format.h>
 
 #include <iostream>
+#include <stdexcept>
 #include <string>
 #include <unordered_map>
 
@@ -19,7 +21,7 @@ using cli_command_map_type = std::unordered_map<std::string_view, boost::shared_
 
 auto is_shared_library(const fs::path& p) -> bool;
 
-auto load_cli_command_modules(po::options_description& options) -> cli_command_map_type;
+auto load_cli_command_modules(const po::variables_map& vm) -> cli_command_map_type;
 
 auto print_version_info() noexcept -> void;
 auto print_usage_info(const cli_command_map_type& cli) -> void;
@@ -30,7 +32,7 @@ int main(int argc, char* argv[])
     options.add_options()
         ("help,h", "")
         ("version,v", "")
-        ("plugin-home,p", "")
+        ("plugin-home,p", po::value<std::string>(), "")
         ("command", po::value<std::string>(), "")
         ("arguments", po::value<std::vector<std::string>>(), "");
 
@@ -38,45 +40,51 @@ int main(int argc, char* argv[])
     positional_options.add("command", 1);
     positional_options.add("arguments", -1);
 
-    po::variables_map vm;
-    auto parsed = po::command_line_parser(argc, argv)
-        .options(options)
-        .positional(positional_options)
-        .allow_unregistered()
-        .run();
+    try {
+        po::variables_map vm;
+        auto parsed = po::command_line_parser(argc, argv)
+            .options(options)
+            .positional(positional_options)
+            .allow_unregistered()
+            .run();
 
-    po::store(parsed, vm);
-    po::notify(vm);
+        po::store(parsed, vm);
+        po::notify(vm);
 
-    if (vm.count("version")) {
-        print_version_info();
-        return 0;
-    }
-
-    load_client_api_plugins();
-
-    auto cli = load_cli_command_modules(options);
-
-    if (const auto show_help_text = vm.count("help") > 0; vm.count("command")) {
-        const auto command = vm["command"].as<std::string>();
-        auto iter = cli.find(command);
-
-        if (auto iter = cli.find(command); std::end(cli) == iter) {
-            fmt::print("Invalid command: {}\n", command);
-            return 1;
-        }
-
-        if (show_help_text) {
-            fmt::print("{}\n", iter->second->help_text());
+        if (vm.count("version")) {
+            print_version_info();
             return 0;
         }
 
-        auto remaining_args = po::collect_unrecognized(parsed.options, po::include_positional);
-        remaining_args.erase(std::begin(remaining_args));
-        return iter->second->execute(remaining_args);
+        load_client_api_plugins();
+
+        auto cli = load_cli_command_modules(vm);
+
+        if (const auto show_help_text = vm.count("help") > 0; vm.count("command")) {
+            const auto command = vm["command"].as<std::string>();
+            auto iter = cli.find(command);
+
+            if (auto iter = cli.find(command); std::end(cli) == iter) {
+                fmt::print("Invalid command: {}\n", command);
+                return 1;
+            }
+
+            if (show_help_text) {
+                fmt::print("{}\n", iter->second->help_text());
+                return 0;
+            }
+
+            auto remaining_args = po::collect_unrecognized(parsed.options, po::include_positional);
+            remaining_args.erase(std::begin(remaining_args));
+            return iter->second->execute(remaining_args);
+        }
+        else if (show_help_text) {
+            print_usage_info(cli);
+        }
     }
-    else if (show_help_text) {
-        print_usage_info(cli);
+    catch (const std::exception& e) {
+        fmt::print("ERROR: {}\n", e.what());
+        return 1;
     }
 
     return 0;
@@ -88,14 +96,28 @@ auto is_shared_library(const fs::path& p) -> bool
     return true;
 }
 
-auto load_cli_command_modules(po::options_description& options) -> cli_command_map_type
+auto load_cli_command_modules(const po::variables_map& vm) -> cli_command_map_type
 {
     cli_command_map_type map;
+    fs::path lib_dir;
 
-    // TODO The shared library directory should come from a config file or something.
-    // This info should come from the plugins home directory. There should be an option
-    // for overriding the default.
-    for (auto&& e : fs::directory_iterator{"/opt/irods_cli/lib"}) {
+    if (vm.count("plugin-home")) {
+        lib_dir = vm["plugin-home"].as<std::string>();
+    }
+    else {
+        rodsEnv env;
+        _getRodsEnv(env);
+
+        if (std::strlen(env.irodsPluginHome) > 0) {
+            lib_dir = env.irodsPluginHome;
+            lib_dir /= "cli";
+        }
+        else {
+            lib_dir = irods::get_irods_default_plugin_directory();
+        }
+    }
+
+    for (auto&& e : fs::directory_iterator{lib_dir}) {
         if (is_shared_library(e)) {
             namespace dll = boost::dll;
             auto cli_impl = dll::import<irods::cli::command>(e.path(), "cli_impl", dll::load_mode::append_decorations);
@@ -113,8 +135,8 @@ auto print_version_info() noexcept -> void
 
 auto print_usage_info(const cli_command_map_type& cli) -> void
 {
-    fmt::print("usage: irods [-v | --version] [-p | --plugin-home <DIR>] [-h | --help]\n"
-               "usage: irods <command> [<args>]\n"
+    fmt::print("usage: irods [-v | --version] [-p | --plugin-home <dir>] [-h | --help]\n"
+               "usage: irods [-p | --plugin-home <dir>] <command> [<options>] [<args>]\n"
                "\n"
                "These are common iRODS commands used in various situations:\n"
                "\n");

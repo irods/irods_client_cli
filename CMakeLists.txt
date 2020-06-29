@@ -9,7 +9,7 @@ project(irods_cli)
 
 set(IRODS_CLI_VERSION ${IRODS_VERSION})
 set(IRODS_CLI_REVISION 0)
-set(IRODS_CLI_LIBRARY_INSTALL_DIR /opt/irods_cli/lib)
+set(IRODS_CLI_LIBRARY_INSTALL_DIR /usr/lib/irods/plugins/cli)
 
 include(${IRODS_TARGETS_PATH})
 
@@ -37,6 +37,7 @@ set(CMAKE_EXE_LINKER_FLAGS_INIT "${CMAKE_MODULE_LINKER_FLAGS} -stdlib=libc++")
 set(CMAKE_EXE_LINKER_FLAGS "${CMAKE_MODULE_LINKER_FLAGS} -stdlib=libc++ -Wl,--export-dynamic -pthread")
 
 # Make ALL symbols in shared libraries hidden by default.
+# TODO Verify this behavior.
 set_property(GLOBAL PROPERTY CMAKE_CXX_VISIBILITY_PRESET hidden)
 
 set(APP irods)

@@ -110,11 +110,12 @@ auto load_cli_command_plugins(const po::variables_map& vm) -> cli_command_map_ty
 
         if (std::strlen(env.irodsPluginHome) > 0) {
             lib_dir = env.irodsPluginHome;
-            lib_dir /= "cli";
         }
         else {
             lib_dir = irods::get_irods_default_plugin_directory();
         }
+
+        lib_dir /= "cli";
     }
 
     for (auto&& e : fs::directory_iterator{lib_dir}) {

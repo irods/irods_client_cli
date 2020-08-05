@@ -70,6 +70,7 @@ add_subdirectory(commands/get)
 add_subdirectory(commands/ls)
 add_subdirectory(commands/put)
 add_subdirectory(commands/touch)
+add_subdirectory(commands/cp)
 
 # Installation
 install(TARGETS ${APP}

@@ -131,7 +131,7 @@ auto load_cli_command_plugins(const po::variables_map& vm) -> cli_command_map_ty
 
 auto print_version_info() noexcept -> void
 {
-    fmt::print("irods version {}\n", IRODS_CLI_VERSION); // Defined by CMakeLists.txt
+    fmt::print("irods cli version {}\n", IRODS_CLI_VERSION); // Defined by CMakeLists.txt
 }
 
 auto print_usage_info(const cli_command_map_type& cli) -> void
